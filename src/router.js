@@ -1,27 +1,54 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Vue from "vue"
+import Router from "vue-router"
+import Panels from './components/Panels'
+import Shift from './views/Shift'
+import ShiftUsers from './views/ShiftUser'
+import NewShiftUsers from './views/NewUser'
+import User from './views/User'
 
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: function () { 
-        return import(/* webpackChunkName: "about" */ './views/About.vue')
-      }
-    }
-  ]
-})
+    mode: 'history',
+    routes: [
+        {
+            path: '*',
+            redirect: {
+                name: 'shift'
+            }
+        },
+        {
+            path: '/',
+            redirect: {
+                name: 'shift'
+            }
+        },
+        {
+            path: '/shift',
+            name: "shift",
+            component: Panels, //Root component acts as a parent as a panel group, all children routes panels under the main panel group
+            children: [
+                {
+                    path: '', //path is set to empty to load default component
+                    name: 'shift',
+                    component: Shift
+                },
+                {
+                    path: 'users',
+                    name: 'shiftuser',
+                    component: ShiftUsers
+                },
+                {
+                    path: 'users/new',
+                    name: 'newuser',
+                    component: NewShiftUsers
+                },
+                {
+                    path: 'users/:id',
+                    name: 'user',
+                    component: User
+                }
+            ]
+        }
+    ]
+});
