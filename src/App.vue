@@ -37,4 +37,9 @@ body {
 .sidebar {
     flex: 1;
 }
+@media screen and (max-width: 768px) {
+    .main {
+        flex-direction: column;
+    }
+}
 </style>

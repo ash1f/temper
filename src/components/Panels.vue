@@ -2,11 +2,13 @@
   <div>
     <div class="nav">
         <div class="link" v-if="canIGoBack()">
-            <button @click="navigateBack()">back</button>
+            <button @click="navigateBack()">&#60; back</button>
         </div>
     </div>
     <div class="sidebar-content">
-        <router-view></router-view>
+        <transition :name="transition">
+            <router-view class="child-view"></router-view>
+        </transition>
     </div>
   </div>
 </template>
@@ -17,6 +19,7 @@ export default {
     data () {
         return {
             slideable: 'slide-right',
+            transition: 'slide-left'
         }
     },
     methods: {
@@ -47,10 +50,10 @@ export default {
         }
     },
     watch: {
-        '$route' (to, from) {
+        '$route' (to, from) { //change router transition based on going back or forward
             const toDepth = to.path.split('/').length
             const fromDepth = from.path.split('/').length
-            this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+            this.transition = toDepth < fromDepth ? 'slide-right' : 'slide-left'
         }
     }
 }
@@ -62,11 +65,14 @@ export default {
     color: black;
     font-weight: bold;
 }
-.sidebar {
-    padding: 2em 1em;
-}
 .nav {
     display: flex;
+    padding: 1em;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 15px #00000026;
+}
+.sidebar-content {
+    padding: 2em 1em;
 }
 .nav h2{
     text-align: center;
@@ -76,5 +82,30 @@ export default {
 }
 .link button{
     margin-right: 20px;
+    font-size: 20px;
+    background-color: transparent;
+    outline: none;
+    border: none;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s ease;
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0;
+}
+.child-view {
+  position: absolute;
+  transition: all .5s cubic-bezier(.55,0,.1,1);
+}
+.slide-left-enter, .slide-right-leave-active {
+  opacity: 0;
+  -webkit-transform: translate(30px, 0);
+  transform: translate(30px, 0);
+}
+.slide-left-leave-active, .slide-right-enter {
+  opacity: 0;
+  -webkit-transform: translate(-30px, 0);
+  transform: translate(-30px, 0);
 }
 </style>
